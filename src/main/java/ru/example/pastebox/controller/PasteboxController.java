@@ -39,7 +39,7 @@ public class PasteboxController {
     @PostMapping
     public ResponseEntity<?> addPastebox(@RequestBody PasteboxRequestDto pasteboxRequest){
         if (pasteboxRequest.data() == null || pasteboxRequest.data().isBlank()){
-            final var message = this.messageSource.getMessage("pastebox.errors.data_not_set", new Object[0], Locale.US);
+            final var message = this.messageSource.getMessage("pastebox.errors.data_not_set", new Object[0], Locale.ENGLISH);
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
                     .body(new ErrorsPresentation(List.of(message)));
         } else

@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.util.UriComponentsBuilder;
 import ru.example.pastebox.dto.ErrorsPresentation;
 import ru.example.pastebox.dto.PasteboxRequestDto;
 import ru.example.pastebox.dto.PasteboxResponseDto;
@@ -18,6 +19,7 @@ import ru.example.pastebox.model.PublicStatus;
 import ru.example.pastebox.repository.PasteboxRepository;
 import ru.example.pastebox.service.PasteboxService;
 
+import java.net.URI;
 import java.util.List;
 import java.util.Locale;
 
@@ -72,6 +74,8 @@ class PasteboxControllerTest {
 
     @Test
     void addPastebox_DataIsValid_ReturnsValidResponse() {
+        final var host ="http://pastebox.example.ru";
+
         var expected = new PasteboxUrlResponseDto("http://pastebox.example.ru");
         var requestDto = new PasteboxRequestDto("1",100, PublicStatus.PUBLIC.name());
         when(this.pasteboxService.add(requestDto)).thenReturn(expected);
@@ -81,12 +85,19 @@ class PasteboxControllerTest {
         assertNotNull(actual);
         assertEquals(HttpStatus.OK, actual.getStatusCode());
         assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
-        assertEquals(expected, actual.getBody());
+        if (actual.getBody() instanceof PasteboxUrlResponseDto pasteboxUrlResponseDto){
+            assertNotNull(pasteboxUrlResponseDto);
+            assertEquals(host, pasteboxUrlResponseDto.url());
+            verify(this.pasteboxService).add(requestDto);
+        } else {
+            assertInstanceOf(PasteboxUrlResponseDto.class,actual.getBody());
+        }
+        verifyNoMoreInteractions(this.pasteboxService);
     }
 
     @Test
     void addPastebox_DataInvalid_ReturnsValidResponse() {
-        var locale = Locale.US;
+        var locale = Locale.ENGLISH;
         var errorMessage = "Data not set";
 
         var requestDto = new PasteboxRequestDto(null,100, PublicStatus.PUBLIC.name());
