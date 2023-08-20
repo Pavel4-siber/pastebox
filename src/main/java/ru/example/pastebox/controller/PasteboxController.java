@@ -1,15 +1,18 @@
 package ru.example.pastebox.controller;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.context.MessageSource;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.example.pastebox.dto.ErrorsPresentation;
 import ru.example.pastebox.dto.PasteboxRequestDto;
 import ru.example.pastebox.dto.PasteboxResponseDto;
 import ru.example.pastebox.dto.PasteboxUrlResponseDto;
 import ru.example.pastebox.service.PasteboxService;
 
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Zhurenkov Pavel 13.08.2023
@@ -20,6 +23,8 @@ import java.util.List;
 public class PasteboxController {
 
     private final PasteboxService pasteboxService;
+
+    private final MessageSource messageSource;
 
     @GetMapping
     public ResponseEntity<List<PasteboxResponseDto>> getPasteboxList(){
@@ -32,7 +37,12 @@ public class PasteboxController {
     }
 
     @PostMapping
-    public ResponseEntity<PasteboxUrlResponseDto> addPastebox(@RequestBody PasteboxRequestDto pasteboxRequest){
+    public ResponseEntity<?> addPastebox(@RequestBody PasteboxRequestDto pasteboxRequest){
+        if (pasteboxRequest.data() == null || pasteboxRequest.data().isBlank()){
+            final var message = this.messageSource.getMessage("pastebox.errors.data_not_set", new Object[0], Locale.US);
+            return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
+                    .body(new ErrorsPresentation(List.of(message)));
+        } else
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(pasteboxService.add(pasteboxRequest));
     }
 }
