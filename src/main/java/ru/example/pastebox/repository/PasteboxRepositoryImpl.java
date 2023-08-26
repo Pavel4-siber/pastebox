@@ -45,4 +45,9 @@ public class PasteboxRepositoryImpl implements PasteboxRepository {
         map.put(pastebox.getHash(), pastebox);
         return pastebox;
     }
+
+    @Override
+    public void clear(){
+        map.clear();
+    }
 }

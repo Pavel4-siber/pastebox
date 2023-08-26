@@ -101,7 +101,7 @@ class PasteboxControllerTest {
         var errorMessage = "Data not set";
 
         var requestDto = new PasteboxRequestDto(null,100, PublicStatus.PUBLIC.name());
-        doReturn(errorMessage).when(this.messageSource).getMessage("pastebox.errors.data_not_set", new Object[0], locale);
+        doReturn(errorMessage).when(this.messageSource).getMessage("tasks.create.details.errors.not_set", new Object[0], locale);
         var actual = this.pasteboxController.addPastebox(requestDto);
 
         assertNotNull(actual);

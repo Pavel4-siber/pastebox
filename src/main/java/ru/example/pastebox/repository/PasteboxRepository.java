@@ -16,4 +16,6 @@ public interface PasteboxRepository {
     Optional<Pastebox> getByHash(String hash);
 
     Pastebox add(Pastebox pastebox);
+
+    void clear();
 }

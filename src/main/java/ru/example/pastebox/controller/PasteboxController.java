@@ -2,6 +2,7 @@ package ru.example.pastebox.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -36,13 +37,13 @@ public class PasteboxController {
         return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(pasteboxService.getByHash(hash));
     }
 
-    @PostMapping
+    @PostMapping(consumes = {"text/plain", "application/json"})
     public ResponseEntity<?> addPastebox(@RequestBody PasteboxRequestDto pasteboxRequest){
         if (pasteboxRequest.data() == null || pasteboxRequest.data().isBlank()){
-            final var message = this.messageSource.getMessage("pastebox.errors.data_not_set", new Object[0], Locale.ENGLISH);
+            final var message = this.messageSource.getMessage("tasks.create.details.errors.not_set", new Object[0], Locale.ENGLISH);
             return ResponseEntity.badRequest().contentType(MediaType.APPLICATION_JSON)
                     .body(new ErrorsPresentation(List.of(message)));
         } else
-        return ResponseEntity.ok().contentType(MediaType.APPLICATION_JSON).body(pasteboxService.add(pasteboxRequest));
+        return ResponseEntity.status(HttpStatus.CREATED).contentType(MediaType.APPLICATION_JSON).body(pasteboxService.add(pasteboxRequest));
     }
 }
