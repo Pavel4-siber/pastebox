@@ -75,12 +75,12 @@ class PasteboxControllerTest {
     @Test
     void addPastebox_DataIsValid_ReturnsValidResponse() {
         final var host ="http://pastebox.example.ru";
-
+        final var locale = "ENGLISH";
         var expected = new PasteboxUrlResponseDto("http://pastebox.example.ru");
         var requestDto = new PasteboxRequestDto("1",100, PublicStatus.PUBLIC.name());
         when(this.pasteboxService.add(requestDto)).thenReturn(expected);
 
-        var actual = this.pasteboxController.addPastebox(requestDto);
+        var actual = this.pasteboxController.addPastebox(requestDto, Locale.ENGLISH);
 
         assertNotNull(actual);
         assertEquals(HttpStatus.CREATED, actual.getStatusCode());
@@ -102,7 +102,7 @@ class PasteboxControllerTest {
 
         var requestDto = new PasteboxRequestDto(null,100, PublicStatus.PUBLIC.name());
         doReturn(errorMessage).when(this.messageSource).getMessage("tasks.create.details.errors.not_set", new Object[0], locale);
-        var actual = this.pasteboxController.addPastebox(requestDto);
+        var actual = this.pasteboxController.addPastebox(requestDto, locale);
 
         assertNotNull(actual);
         assertEquals(HttpStatus.BAD_REQUEST, actual.getStatusCode());

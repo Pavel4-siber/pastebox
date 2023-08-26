@@ -97,6 +97,7 @@ public class PasteboxControllerIT {
     void addPastebox_PayloadIsInvalid_ReturnsValidResponse() throws Exception {
         var requestBuilder = post("/v1")
                 .contentType(MediaType.APPLICATION_JSON)
+                .header(HttpHeaders.ACCEPT_LANGUAGE, "fr")
                 .content("""
                         {
                         "data": null,
@@ -111,7 +112,7 @@ public class PasteboxControllerIT {
                         content().contentType(MediaType.APPLICATION_JSON),
                         content().json("""
                                 {
-                                "errors": ["Task details must be set"]
+                                "errors": ["Les details de la tache doivent etre definis"]
                                 }
                                 """)
                 );
