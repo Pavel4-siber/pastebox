@@ -83,7 +83,7 @@ class PasteboxControllerTest {
         var actual = this.pasteboxController.addPastebox(requestDto);
 
         assertNotNull(actual);
-        assertEquals(HttpStatus.OK, actual.getStatusCode());
+        assertEquals(HttpStatus.CREATED, actual.getStatusCode());
         assertEquals(MediaType.APPLICATION_JSON, actual.getHeaders().getContentType());
         if (actual.getBody() instanceof PasteboxUrlResponseDto pasteboxUrlResponseDto){
             assertNotNull(pasteboxUrlResponseDto);
